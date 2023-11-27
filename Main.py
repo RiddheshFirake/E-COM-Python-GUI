@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Entry, Frame, Button, messagebox
+from tkinter import Tk, Label, Entry, Frame, Button, messagebox,filedialog
 import mysql.connector
 from tkinter import Tk, Label, Entry, Frame, PhotoImage, Canvas, Button
 from PIL import ImageTk
@@ -7,6 +7,7 @@ from tkinter import *
 from mysql.connector import Error
 from PIL import Image, ImageTk
 from tkinter import StringVar
+import csv
 
 
 
@@ -318,11 +319,11 @@ def Auth_A():
 
 
 
-#def HomePage():
+def HomePage():
     #from Admin_Page import S_username,S_password,S_repassword
-#    sign_root.destroy()  # Close the current window if needed
- #   import HomePage
-  #  HomePage.insert_data()
+    sign_root.destroy()  # Close the current window if needed
+    import HomePage
+    HomePage.insert_data()
 
 
 
@@ -1224,6 +1225,31 @@ def open_update_window():
 
 
 
+def export_to_csv():
+    file_path = filedialog.asksaveasfilename(defaultextension=".csv", filetypes=[("CSV files", "*.csv")], initialdir="C:/")
+
+    if file_path:
+        try:
+            with open(file_path, 'w', newline='') as csv_file:
+                csv_writer = csv.writer(csv_file)
+                csv_writer.writerow(['UserId', 'Username', 'Password', 'Gender', 'Products', 'TotalProductPrice'])
+
+                StormZ_db = mysql.connector.connect(host="localhost", user="root", password="pass@123", database="StormZ")
+                StormZ_db_cursor = StormZ_db.cursor()
+                StormZ_db_cursor.execute("SELECT UserId, Username, Password, Gender, Products, TotalProductPrice FROM User")
+                users = StormZ_db_cursor.fetchall()
+
+                for user in users:
+                    csv_writer.writerow(user)
+
+                StormZ_db.close()
+
+            messagebox.showinfo("Export Successful", "Data exported to CSV successfully!")
+        except Exception as e:
+            messagebox.showerror("Export Error", f"An error occurred: {str(e)}")
+
+
+
 def AdminPg():
     global admin_root
     # Root Window
@@ -1277,6 +1303,11 @@ def AdminPg():
         Listbox.insert("","end",values=(UserId,Username,Password,Gender,Products,TotalProductPrice))
         StormZ_db.close()
     # show()
+
+    AdminExportCSV_btn = Button(admin_canvas, text="Export to CSV", font=("Arial", 12, "bold"), bg="#f39c12", fg="white",
+                                bd=6, width=15, command=export_to_csv)
+    AdminExportCSV_btn.place(relx=0.41, rely=0.75)
+
 
 
     # def run_admin_root():
@@ -1579,4 +1610,3 @@ def about_us():
 
 
 root.mainloop()
-
