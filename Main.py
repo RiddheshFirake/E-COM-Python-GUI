@@ -318,11 +318,11 @@ def Auth_A():
 
 
 
-def HomePage():
+#def HomePage():
     #from Admin_Page import S_username,S_password,S_repassword
-    sign_root.destroy()  # Close the current window if needed
-    import HomePage
-    HomePage.insert_data()
+#    sign_root.destroy()  # Close the current window if needed
+ #   import HomePage
+  #  HomePage.insert_data()
 
 
 
